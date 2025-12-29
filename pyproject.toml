@@ -10,3 +10,4 @@ dependencies = [
 [project.optional-dependencies]
 gcs = ["google-cloud-storage>=2.14.0"]
 postgres = ["psycopg2-binary>=2.9.9"]
+test = ["pytest>=8.0.0"]

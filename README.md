@@ -34,6 +34,14 @@ uv sync
 Optional dependencies:
 - GCS output: `uv sync --extra gcs`
 - Postgres output: `uv sync --extra postgres`
+- Tests: `uv sync --extra test`
+
+## Testing
+Run the test suite with `uv`:
+
+```bash
+uv run pytest
+```
 
 ## How the data works
 The API returns **instantaneous power** values (typically in kW):
@@ -47,6 +55,20 @@ To estimate energy (kWh) from power samples:
 energy_kwh ≈ sum(power_kw * poll_interval_seconds / 3600)
 ```
 Example for 5-minute polling: `power_kw * 5/60` per sample.
+
+## SunStrong API notes
+This tool talks to two SunStrong endpoints:
+
+- Auth (Okta): `POST https://edp-api.edp.sunstrongmonitoring.com/v1/auth/okta/signin`
+  - Input JSON: `{"remember":"true","username":"<user>","password":"<pass>"}`
+  - Output JSON includes `access_token`, which is used as the Bearer token for GraphQL.
+- GraphQL: `POST https://edp-api-graphql.mysunstrong.com/graphql`
+  - Input JSON: `{"operationName":"FetchCurrentPower","variables":{"siteKey":"<site_key>"},"query":"query FetchCurrentPower($siteKey: String!) { currentPower(siteKey: $siteKey) { production consumption storage grid timestamp } }"}`
+  - Output JSON (abridged):
+    ```json
+    {"data":{"currentPower":{"production":1.2,"consumption":0.8,"storage":-0.4,"grid":0.1,"timestamp":1704067200000}}}
+    ```
+  - `timestamp` is epoch milliseconds; the client converts it to an ISO 8601 UTC string.
 
 ## Getting credentials (high level)
 You need:
