@@ -1,0 +1,12 @@
+[project]
+name = "sunstrong-oss"
+version = "0.1.0"
+description = "SunStrong solar current power scraper"
+requires-python = ">=3.10"
+dependencies = [
+  "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+gcs = ["google-cloud-storage>=2.14.0"]
+postgres = ["psycopg2-binary>=2.9.9"]
